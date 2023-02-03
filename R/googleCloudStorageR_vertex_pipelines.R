@@ -6,6 +6,7 @@ sessionInfo()
 
 library(googleCloudStorageR)
 library(gargle)
+# options(gargle_verbosity = "debug")
 
 scope <- c("https://www.googleapis.com/auth/cloud-platform")
 token <- token_fetch(scopes = scope)
