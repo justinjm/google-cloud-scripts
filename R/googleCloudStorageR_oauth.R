@@ -11,12 +11,12 @@ install.packages(setdiff(packages, rownames(installed.packages())))
 # load packages 
 library(googleCloudStorageR)
 library(gargle)
+options(gargle_verbosity = "debug")
 
 ## Fetch token. See: https://developers.google.com/identity/protocols/oauth2/scopes
 scope <- c("https://www.googleapis.com/auth/cloud-platform")
-token <- token_fetch(scopes = scope
-                     # ,email = email
-                     )
+token <- token_fetch(scopes = scope,
+                     email = email) # set email to auth without browser dance
 
 ## Pass your token to gcs_auth
 gcs_auth(token = token)
