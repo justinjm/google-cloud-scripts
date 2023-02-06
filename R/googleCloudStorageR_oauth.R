@@ -6,12 +6,12 @@ email <- Sys.getenv("GARGLE_AUTH_EMAIL")
 
 # install required packages if not already 
 packages <- c("googleCloudStorageR", "gargle")
-install.packages(setdiff(packages, rownames(installed.packages())))  
+install.packages(setdiff(packages, rownames(installed.packages())))
 
 # load packages 
 library(googleCloudStorageR)
 library(gargle)
-options(gargle_verbosity = "debug")
+# options(gargle_verbosity = "debug")
 
 ## Fetch token. See: https://developers.google.com/identity/protocols/oauth2/scopes
 scope <- c("https://www.googleapis.com/auth/cloud-platform")
