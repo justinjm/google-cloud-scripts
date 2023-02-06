@@ -8,21 +8,22 @@ bucket <- Sys.getenv("GCS_DEFAULT_BUCKET")
 dataset <- Sys.getenv("BQ_DEFAULT_DATASET")
 
 ## load packages
-# library(googleCloudStorageR)
-library(bigrquery)
+library(googleCloudStorageR)
+# library(bigrquery)
+library(gargle)
 
 ## authenticate 
 ### GCS
-# scope <- c("https://www.googleapis.com/auth/cloud-platform")
-# token <- token_fetch(scopes = scope,
-#                      email = email)  
-# gcs_auth(token = token)
+scope <- c("https://www.googleapis.com/auth/cloud-platform")
+token <- token_fetch(scopes = scope,
+                     email = email)
+gcs_auth(token = token)
 ### BQ 
-bq_auth(email = email)
+# bq_auth(email = email)
 
-# check authentication
-
-bq_project_datasets(project_id)
+## check authentication
+gcs_list_buckets(projectId = project_id)
+# bq_project_datasets(project_id)
 
 # gargle 
 # https://cran.r-project.org/web/packages/gargle/vignettes/gargle-auth-in-client-package.html#getting-that-first-token
