@@ -32,8 +32,8 @@
 
 ### Automation
 
-* extract data
-* load data
+* extract data from SQL Server to GCS 
+* load data into BigQuery from GCS 
 * run validation
 
 template: 
