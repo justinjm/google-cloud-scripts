@@ -105,5 +105,5 @@ data-validation validate column \
     --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
     --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
     --count '*' \
-    -bqrh demos-vertex-ai.pso_data_validator.results
+    --bq-result-handler demos-vertex-ai.pso_data_validator.results
 ```
