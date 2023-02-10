@@ -43,9 +43,7 @@ data-validation validate column \
     --tables-list project.dataset.source_table=database.target_table
 ```
 
-## DVT - initial test 
-
-BQ to BQ validation test 
+## DVT - initial test (BQ to BQ validation test)
 
 
 * copy table in BQ `demo_dataset1` to `demo_dataset2`: 
