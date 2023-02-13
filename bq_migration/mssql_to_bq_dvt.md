@@ -1,6 +1,3 @@
-# Google Cloud Storage to BigQuery and Data Validation Tool (DVT)
-
-* Remote functions - [Working with Remote Functions  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/reference/standard-sql/remote-functions)
 
 * Data Transfer - [Cloud Storage transfers  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/cloud-storage-transfer#bq)
 * DVT - [GoogleCloudPlatform/professional-services-data-validator: Utility to compare data between homogeneous or heterogeneous environments to ensure source and target tables match](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
@@ -37,6 +34,7 @@
 * run validation
 
 template: 
+
 ```
 data-validation validate column \
     --source-conn MY_BQ_CONN --target-conn MY_SQL_CONN \
@@ -44,7 +42,6 @@ data-validation validate column \
 ```
 
 ## DVT - initial test (BQ to BQ validation test)
-
 
 * copy table in BQ `demo_dataset1` to `demo_dataset2`: 
   
@@ -55,7 +52,7 @@ bq cp demo_dataset1.loans demo_dataset2.loans
 * open cloud shell editor 
 * download / install configure DVT <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/installation.md>
 
-```
+```sh
 sudo apt-get install python3
 sudo apt-get install python3-dev
 python -m venv venv
@@ -67,40 +64,42 @@ pip install google-pso-data-validator
 
 * Create a sample BQ connection 
 
-```
+```sh
 data-validation connections add --connection-name MY_BQ_CONN BigQuery --project-id demos-vertex-ai
 ```
 
 * view it 
 
-```
+```sh 
 cat /home/bruce/.config/google-pso-data-validator/MY_BQ_CONN.connection.json
 ```
 
 * first validation: COUNT(*) on a table
 
-```
-data-validation validate column -sc MY_BQ_CONN -tc MY_BQ_CONN -tbls bigquery-public-data.new_york_citibike.citibike_trips
+```sh 
+data-validation validate column \
+  -sc MY_BQ_CONN -tc MY_BQ_CONN \
+  -tbls bigquery-public-data.new_york_citibike.citibike_trips
 ```
 
 <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/examples.md>
 
-* second
+* second validation: COUNT(*) between 2 tables 
 
-```
+```sh
 data-validation validate column \
     --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
     --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
     --count '*'    
 ```
 
-* third - save results as bq table  (reaactivate `venv` first)
+* third: COUNT(*) between 2 tables and save results as a BQ table  (reaactivate `venv` first)
 
-```
+```sh
 source venv/bin/activate
 ```
 
-```
+```sh
 data-validation validate column \
     --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
     --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
