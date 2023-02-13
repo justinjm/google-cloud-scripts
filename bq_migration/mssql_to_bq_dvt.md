@@ -8,11 +8,13 @@
 
 ## Overview
 
+This file documents the steps to setup and run a workflow of validating data in the destination (BQ) against the original source (Cloud SQL - MSSQL Server)
+
 ## Setup
 
 * Setup environment - local (part 1 of 2)
   * download source code to cloud shell
-  
+
 * Setup environment - GCP
   * enable APIS
   * create GCS bucket and grant permissions to default compute engine SA
@@ -30,6 +32,10 @@
     * add connections
       * MSSQL Server
       * BQ
+
+## Workflow: Validate data in destination table (BQ) with source table (MSSQL Server)
+
+TODO
 
 ## DVT Hello world test: BQ source vs BQ target table
 
