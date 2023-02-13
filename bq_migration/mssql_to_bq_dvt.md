@@ -1,56 +1,44 @@
+# Google Cloud Storage to BigQuery and Data Validation Tool (DVT)
 
-* Data Transfer - [Cloud Storage transfers  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/cloud-storage-transfer#bq)
+* [What is Cloud SQL?  |  Cloud SQL for SQL Server  |  Google Cloud](https://cloud.google.com/sql/docs/sqlserver/introduction)
+  * [What is Cloud SQL?  |  Cloud SQL for SQL Server  |  Google Cloud](https://cloud.google.com/sql/docs/sqlserver/introduction)
+* [gsutil tool  |  Cloud Storage  |  Google Cloud](https://cloud.google.com/storage/docs/gsutil)
+  * [cp - Copy files and objects  |  Cloud Storage  |  Google Cloud](https://cloud.google.com/storage/docs/gsutil/commands/cp#synchronizing-over-os-specific-file-types-such-as-symlinks-and-devices)
 * DVT - [GoogleCloudPlatform/professional-services-data-validator: Utility to compare data between homogeneous or heterogeneous environments to ensure source and target tables match](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
 
-## Outline
+## Overview
 
-### Setup
+## Setup
 
 * Setup environment - local
   * download source code to cloud shell
   
-* Setup environment - GCP 
-  * enable APIS 
-  * create GCS bucket and grant permissions to default compute engine SA 
+* Setup environment - GCP
+  * enable APIS
+  * create GCS bucket and grant permissions to default compute engine SA
+  * locate sample dataset in GCS bucket
 
 * Setup MSSQL 
-  * Provision SQL Server VM instance
-  * Load sample data to SQL server 
-
-* Setup BQ - Remote function
-  * create 
-  * create remote function connection
-  * create remote function `CREATE FUNCTION` <https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_function_statement>
+  * Provision SQL Server VM instance [What is Cloud SQL?  |  Cloud SQL for SQL Server  |  Google Cloud](https://cloud.google.com/sql/docs/sqlserver/introduction)
+  * Load sample data to SQL server
 
 * setup DVT
   * install DVT <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/installation.md>
   * install connection - MSSQL Server -  <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#mssql-server>
-  * add connections 
+  * add connections
 
-### Automation
+## DVT Hello world test: BQ source vs BQ target table
 
-* extract data from SQL Server to GCS 
-* load data into BigQuery from GCS 
-* run validation
-
-template: 
-
-```
-data-validation validate column \
-    --source-conn MY_BQ_CONN --target-conn MY_SQL_CONN \
-    --tables-list project.dataset.source_table=database.target_table
-```
-
-## DVT - initial test (BQ to BQ validation test)
-
-* copy table in BQ `demo_dataset1` to `demo_dataset2`: 
+* create copy of existing demo dataset for comparison. copy table in BQ `demo_dataset1` to `demo_dataset2`: 
   
-```
+```sh
 bq cp demo_dataset1.loans demo_dataset2.loans
 ```
 
+we now have `demo_dataset1.loans` as the source table and `demo_dataset2.loans` as the target table. 
+
 * open cloud shell editor 
-* download / install configure DVT <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/installation.md>
+* download / install configure DVT per instructions here: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/installation.md>
 
 ```sh
 sudo apt-get install python3
@@ -68,7 +56,7 @@ pip install google-pso-data-validator
 data-validation connections add --connection-name MY_BQ_CONN BigQuery --project-id demos-vertex-ai
 ```
 
-* view it 
+* view it to verify 
 
 ```sh 
 cat /home/bruce/.config/google-pso-data-validator/MY_BQ_CONN.connection.json
@@ -82,8 +70,6 @@ data-validation validate column \
   -tbls bigquery-public-data.new_york_citibike.citibike_trips
 ```
 
-<https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/examples.md>
-
 * second validation: COUNT(*) between 2 tables 
 
 ```sh
@@ -93,16 +79,15 @@ data-validation validate column \
     --count '*'    
 ```
 
-* third: COUNT(*) between 2 tables and save results as a BQ table  (reaactivate `venv` first)
+* third: COUNT(*) between 2 tables and save results as a BQ table  (reaactivate `venv` first if needed)
 
 ```sh
-source venv/bin/activate
-```
-
-```sh
+# source venv/bin/activate
 data-validation validate column \
     --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
     --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
     --count '*' \
     --bq-result-handler demos-vertex-ai.pso_data_validator.results
 ```
+
+See more examples here: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/examples.md>
