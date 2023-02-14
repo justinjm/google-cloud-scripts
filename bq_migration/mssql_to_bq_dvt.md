@@ -211,10 +211,10 @@ There is also an API version that was not used for this tutorial: <https://www.c
 * ingest data from source into GCS bucket
 
 ```sh
-gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
 # gsutil cp test.sql gs://demos-vertex-ai-bq-staging/test.sql
+gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
+# gsutil cp loans.sql gs://demos-vertex-ai-bq-staging/loans.sql
 ```
-
 <https://www.sqlservertutorial.net/load-sample-database/>
 
 * grant service account access to GCS bucket (get service account from UI, instance overview page)
