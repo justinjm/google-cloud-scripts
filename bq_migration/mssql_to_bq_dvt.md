@@ -104,7 +104,7 @@ See more examples here: <https://github.com/GoogleCloudPlatform/professional-ser
 
 ## DVT Install Test - MSSQL Server 
 
-install MSSQL driver on cloud shell
+### install MSSQL driver on cloud shell
 
 ```sh
 sudo su
@@ -130,20 +130,66 @@ source ~/.bashrc
 pip install pyodbc
 ```
 
-* spin up MSQL server instance
+### spin up MSQL server instance
+
+* create instance
 
 ```sh
-gcloud beta sql instances create mssqlserverinstance \
---database-version=SQLSERVER_2017_STANDARD \
---cpu=2 \
---memory=4GB \
---root-password=password123 \
---zone=us-central1-a
+gcloud beta sql instances create mssqls-instance \
+  --database-version=SQLSERVER_2017_STANDARD \
+  --cpu=2 \
+  --memory=4GB \
+  --root-password=password123 \
+  --zone=us-central1-a
 ```
 
-* Create instance doc: <https://cloud.google.com/sql/docs/sqlserver/create-instance>
-* gcloud doc: <https://cloud.google.com/sdk/gcloud/reference/sql/instances/create>
+Create instance doc: <https://cloud.google.com/sql/docs/sqlserver/create-instance>  
+gcloud doc: <https://cloud.google.com/sdk/gcloud/reference/sql/instances/create>
 
+
+* configure cloud shell - install `sqlcmd`
+
+<https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017&tabs=ubuntu-install%2Credhat-offline#ubuntu>
+
+```
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+sudo apt-get update
+sudo apt-get install mssql-tools unixodbc-dev
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+* connect to instance and create database 
+
+
+
+
+
+gcloud sql connect mssqls-instance --user=root
+
+
+* create SQL dump file from CSV for `loans_200k.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm)
+
+input: `loans_200k.csv`
+output: `loans200k.sql` 
+
+There is also an API version that was not used for this tutorial: <https://www.convertcsv.io/products/csv2sql>
+
+
+* ingest data from source into GCS bucket
+
+```sh
+gsutil cp loan200k.sql gs://demos-vertex-ai-bq-staging/loan200k.sql
+# curl https://raw.githubusercontent.com/sedeh/Datasets/main/loan_200k.csv | gsutil cp - gs://demos-vertex-ai-bq-staging/loan_200k.csv
+```
+
+
+
+
+
+* load data 
 
 * get info from instance 
 
