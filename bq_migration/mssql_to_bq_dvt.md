@@ -195,11 +195,13 @@ sqlcmd -S 34.172.120.100 -U sqlserver -P 'password123'
 
 * create new database for loading data 
 
+UI: Databases -> Create Database  `demodatabase2`
+
+`sqlcmd`: 
+
 ```sql
 -- CREATE DATABASE demodatabase;
 ```
-
-UI: Databases -> Create Database  `demodatabase2`
 
 * create SQL dump file from CSV for `loans_200k.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm)
 
@@ -208,6 +210,16 @@ output: `loans200k.sql`
 
 There is also an API version that was not used for this tutorial: <https://www.convertcsv.io/products/csv2sql>
 
+* view databases 
+
+```sh
+SELECT s.name as schema_name, s.schema_id, u.name as schema_owner from sys.schemas s inner join sys.sysusers u on u.uid = s.principal_id order by s.name;
+GO
+```
+
+<https://www.devx.com/devx/tip-add-optional-parameters-in-sql/>
+
+
 * ingest data from source into GCS bucket
 
 ```sh
@@ -215,7 +227,11 @@ There is also an API version that was not used for this tutorial: <https://www.c
 gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
 # gsutil cp loans.sql gs://demos-vertex-ai-bq-staging/loans.sql
 ```
+
 <https://www.sqlservertutorial.net/load-sample-database/>
+<https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-2017>
+
+
 
 * grant service account access to GCS bucket (get service account from UI, instance overview page)
 
