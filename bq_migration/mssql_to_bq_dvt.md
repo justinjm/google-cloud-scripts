@@ -41,11 +41,15 @@ TODO
 
 * create GCS bucket with sample dataset 
 
+TODO
+
+* load data into GCS bucket
+
 ```sh
 curl https://raw.githubusercontent.com/sedeh/Datasets/main/loan_200k.csv | gsutil cp - gs://demos-vertex-ai-bq-staging/loan_200k.csv
 ```
 
-* load data from GCS to BQ table 
+* load data from GCS to BQ table
 
 TODO (grab from `gcp-bigquery` repo)
 
@@ -200,7 +204,7 @@ UI: Databases -> Create Database  `demodatabase2`
 `sqlcmd`: 
 
 ```sql
--- CREATE DATABASE demodatabase;
+-- CREATE DATABASE demodatabase2;
 ```
 
 * create SQL dump file from CSV for `loans_200k.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm)
@@ -230,7 +234,6 @@ gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
 
 <https://www.sqlservertutorial.net/load-sample-database/>
 <https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-2017>
-
 
 
 * grant service account access to GCS bucket (get service account from UI, instance overview page)

@@ -16,7 +16,7 @@ CREATE TABLE test.loans(
   ,home_owner        INT 
   ,income            NUMERIC(9,2)
   ,verified          INT 
-  ,`default`         INT
+  ,"default"         INT
   ,purpose           VARCHAR(18)
   ,zip_code          VARCHAR(5)
   ,addr_state        VARCHAR(2)
