@@ -260,7 +260,7 @@ sudo apt-get install unixodbc-dev
 * create DVT connection for MSSQL
 
 ```sh
-data-validation connections add --connection-name MSSQL_CONN MSSQL --host 34.172.120.100 --port 1433 --user sqlserver --password password123 --database demo
+data-validation connections add --connection-name MY_MSSQL_CONN MSSQL --host 34.172.120.100 --port 1433 --user sqlserver --password password123 --database demo
 ```
 
 DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#mssql-server>
