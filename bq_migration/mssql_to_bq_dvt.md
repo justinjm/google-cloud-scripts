@@ -250,14 +250,14 @@ AS (SELECT * EXCEPT(`default`) FROM `demos-vertex-ai.demo_dataset1.loans`)
 
 * get info from SQL instance
   * IP address 
-* 
 
-```
+
+```sh
 source venv/bin/activate
 sudo apt-get install unixodbc-dev
 ```
 
-and create connection
+* create DVT connection for MSSQL
 
 ```sh
 data-validation connections add --connection-name MSSQL_CONN MSSQL --host 34.172.120.100 --port 1433 --user sqlserver --password password123 --database demo
@@ -265,7 +265,14 @@ data-validation connections add --connection-name MSSQL_CONN MSSQL --host 34.172
 
 DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#mssql-server>
 
-* test access to instance 
+* test access to instance - `count(*)` on table
+
+```
+data-validation validate column \
+  -sc MSSQL_CONN \
+  -tbls demo.demo.loans
+```
+
 
 * execute validation
 
