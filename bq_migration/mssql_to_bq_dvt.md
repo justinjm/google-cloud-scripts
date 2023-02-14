@@ -199,9 +199,7 @@ sqlcmd -S 34.172.120.100 -U sqlserver -P 'password123'
 -- CREATE DATABASE demodatabase;
 ```
 
-UI: Databases -> Create Database 
-
-Name: `demodatabase2`
+UI: Databases -> Create Database  `demodatabase2`
 
 * create SQL dump file from CSV for `loans_200k.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm)
 
@@ -210,15 +208,30 @@ output: `loans200k.sql`
 
 There is also an API version that was not used for this tutorial: <https://www.convertcsv.io/products/csv2sql>
 
-
 * ingest data from source into GCS bucket
 
 ```sh
-gsutil cp loan200k.sql gs://demos-vertex-ai-bq-staging/loan200k.sql
-
+gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
+# gsutil cp test.sql gs://demos-vertex-ai-bq-staging/test.sql
 ```
 
-* load data 
+<https://www.sqlservertutorial.net/load-sample-database/>
+
+* grant service account access to GCS bucket (get service account from UI, instance overview page)
+
+```sh
+gsutil iam ch serviceAccount:p746038361521-irmwld@gcp-sa-cloud-sql.iam.gserviceaccount.com:objectAdmin \
+  gs://demos-vertex-ai-bq-staging/
+```
+
+* load data to SQL instance
+
+```sh
+gcloud sql import sql mssqls-instance gs://demos-vertex-ai-bq-staging/loanstest.sql \
+  --database=demodatabase2
+```
+
+<https://cloud.google.com/sql/docs/sqlserver/import-export/import-export-sql#gcloud>
 
 * get info from instance 
 
