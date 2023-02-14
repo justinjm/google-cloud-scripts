@@ -1,4 +1,3 @@
-# want 
 library(here)
 
 infile <- here("bq_migration", "loan_200k.csv")

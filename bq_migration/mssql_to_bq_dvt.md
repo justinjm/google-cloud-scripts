@@ -199,17 +199,11 @@ sqlcmd -S 34.172.120.100 -U sqlserver -P 'password123'
 
 * create new database for loading data 
 
-UI: Databases -> Create Database  `demodatabase2`
-
-`sqlcmd`: 
-
-```sql
--- CREATE DATABASE demodatabase2;
-```
+UI: Databases -> Create Database  `demo`
 
 * create SQL dump file from CSV for `loans_200.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm). There is also an API version that was not used for this tutorial: <https://www.convertcsv.io/products/csv2sql>
 
-input: `loans_200.csv`
+input: `loan_200.csv`
 output: `loans.sql` 
 
 <https://www.sqlservertutorial.net/load-sample-database/>
@@ -218,7 +212,6 @@ output: `loans.sql`
 * upload loans.sql file to GCS bucket
 
 ```sh
-# gsutil cp loanstest.sql gs://demos-vertex-ai-bq-staging/loanstest.sql
 gsutil cp loans.sql gs://demos-vertex-ai-bq-staging/loans.sql
 ```
 
@@ -236,11 +229,6 @@ gcloud sql import sql mssqls-instance gs://demos-vertex-ai-bq-staging/loans.sql 
   --database=demo
 ```
 
-```sh
-gcloud sql import sql mssqls-instance gs://demos-vertex-ai-bq-staging/loans.sql \
-  --database=demo
-```
-
 <https://cloud.google.com/sql/docs/sqlserver/import-export/import-export-sql#gcloud>
 
 
@@ -251,25 +239,41 @@ SELECT s.name as schema_name, s.schema_id, u.name as schema_owner from sys.schem
 GO
 ```
 
+* create dataset in BQ for validation against MSSQL (no default column)
 
+```sql
+CREATE OR REPLACE TABLE `demo.loans`
+AS (SELECT * EXCEPT(`default`) FROM `demos-vertex-ai.demo_dataset1.loans`)
+```
 
-* get info from instance 
+#### DVT 
 
-```json
-{
-    # Configuration Required for All Data Sources
-    "source-type": "MSSQL",
+* get info from SQL instance
+  * IP address 
+* 
 
-    # Connection Details
-    "host": "127.0.0.1",
-    "port": 1433,
-    "user": "my-user",
-    "password": "my-password",
-    "database": "my-db",
+```
+source venv/bin/activate
+sudo apt-get install unixodbc-dev
+```
 
-}
+and create connection
+
+```sh
+data-validation connections add --connection-name MSSQL_CONN MSSQL --host 34.172.120.100 --port 1433 --user sqlserver --password password123 --database demo
 ```
 
 DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md#mssql-server>
 
 * test access to instance 
+
+* execute validation
+
+```sh
+
+data-validation validate column \
+    --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
+    --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
+    --count '*' \
+    --bq-result-handler demos-vertex-ai.pso_data_validator.results
+```
