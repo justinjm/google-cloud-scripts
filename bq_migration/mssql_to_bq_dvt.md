@@ -39,6 +39,16 @@ TODO
 
 ## DVT Hello world test: BQ source vs BQ target table
 
+* create GCS bucket with sample dataset 
+
+```sh
+curl https://raw.githubusercontent.com/sedeh/Datasets/main/loan_200k.csv | gsutil cp - gs://demos-vertex-ai-bq-staging/loan_200k.csv
+```
+
+* load data from GCS to BQ table 
+
+TODO (grab from `gcp-bigquery` repo)
+
 * create copy of existing demo dataset for comparison. copy table in BQ `demo_dataset1` to `demo_dataset2`: 
   
 ```sh
@@ -146,12 +156,21 @@ gcloud beta sql instances create mssqls-instance \
 Create instance doc: <https://cloud.google.com/sql/docs/sqlserver/create-instance>  
 gcloud doc: <https://cloud.google.com/sdk/gcloud/reference/sql/instances/create>
 
+* create VM to connect to instance 
 
-* configure cloud shell - install `sqlcmd`
-
-<https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017&tabs=ubuntu-install%2Credhat-offline#ubuntu>
-
+```sh
+gcloud compute instances create instance-1 --project=demos-vertex-ai --zone=us-central1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --metadata=enable-oslogin=true --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746038361521-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server --create-disk=auto-delete=yes,boot=yes,device-name=instance-1,image=projects/debian-cloud/global/images/debian-11-bullseye-v20230206,mode=rw,size=10,type=projects/demos-vertex-ai/zones/us-central1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
 ```
+
+* add IP to instance connections 
+
+UI: Cloud SQL -> Instance -> connections -> authorized network 
+
+Copy paste external IP from VM instance 
+
+* configure VM - install `sqlcmd`
+
+```sh
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 sudo apt-get update
@@ -161,14 +180,28 @@ echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-* connect to instance and create database 
+<https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools?view=sql-server-2017&tabs=ubuntu-install%2Credhat-offline#ubuntu>
 
+* create a password for user `sqlserver` 
 
+<https://cloud.google.com/sql/docs/sqlserver/create-manage-users#user-root>
 
+* Connect to the instance 
 
+```
+# sqlcmd -S <IP-ADDRESS> -U <USERNAME> -P '<PASSWORD>'
+sqlcmd -S 34.172.120.100 -U sqlserver -P 'password123'
+```
 
-gcloud sql connect mssqls-instance --user=root
+* create new database for loading data 
 
+```sql
+-- CREATE DATABASE demodatabase;
+```
+
+UI: Databases -> Create Database 
+
+Name: `demodatabase2`
 
 * create SQL dump file from CSV for `loans_200k.csv` via [convertcsv.com](https://www.convertcsv.com/csv-to-sql.htm)
 
@@ -182,12 +215,8 @@ There is also an API version that was not used for this tutorial: <https://www.c
 
 ```sh
 gsutil cp loan200k.sql gs://demos-vertex-ai-bq-staging/loan200k.sql
-# curl https://raw.githubusercontent.com/sedeh/Datasets/main/loan_200k.csv | gsutil cp - gs://demos-vertex-ai-bq-staging/loan_200k.csv
+
 ```
-
-
-
-
 
 * load data 
 
