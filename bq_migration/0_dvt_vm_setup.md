@@ -176,3 +176,28 @@ data-validation validate column \
     --count '*' \
     --bq-result-handler demos-vertex-ai.demo_dvt.results
 ```
+
+### Save results to BQ table with labels 
+
+to more easily identify DVT jobs in the `results` table:
+
+```sh
+data-validation validate column \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    --tables-list demo.demo.loans=demos-vertex-ai.demo.loans201 \
+    --count '*' \
+    --bq-result-handler demos-vertex-ai.demo_dvt.results \
+    --labels tag=test-loans201
+```
+
+<https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/examples.md>
+
+And run a DVT job expected to fail to populate results table with sample data
+
+```sh
+data-validation validate column \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    --tables-list demo.demo.loans=demos-vertex-ai.demo.loans \
+    --bq-result-handler demos-vertex-ai.demo_dvt.results \
+    --labels tag=test-loans200k
+```
