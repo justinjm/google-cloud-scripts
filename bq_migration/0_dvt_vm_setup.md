@@ -2,7 +2,23 @@
 
 [Automate Validation using the Data Validation Tool (DVT) | Google Cloud Skills Boost](https://www.cloudskillsboost.google/focuses/45997?parent=catalog)
 
+## create VM 
+
+Debian GNU/Linux 11 (bullseye)
+
+```sh
+gcloud compute instances create data-validator --project=demos-vertex-ai --zone=us-central1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --metadata=enable-oslogin=true --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746038361521-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=data-validator,image=projects/debian-cloud/global/images/debian-11-bullseye-v20230206,mode=rw,size=10,type=projects/demos-vertex-ai/zones/us-central1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
+```
+
+## Add VM IP to Cloud SQL instance 
+
+add 
+name: data-validator
+Range: `<IP ADDRESS>`
+
 ## install dvt and dependcies 
+
+SSH into instance and run the following
 
 ### install dependencies for DVT
 
@@ -15,7 +31,6 @@ sudo pip install --upgrade pip virtualenv
 ```
 
 ### Activate venv and install DVT 
-
 
 ```sh
 virtualenv -p python3 env
@@ -34,7 +49,7 @@ DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-vali
 
 ```sh
 sudo su
-curl <https://packages.microsoft.com/keys/microsoft.asc> | apt-key add -
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 #Debian 11
 curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
@@ -55,9 +70,8 @@ sudo apt-get install unixodbc-dev
 
 ## create source and target connections 
 
+GCP doc: <https://cloud.google.com/sql/docs/sqlserver/connect-overview>
 DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-validator/blob/develop/docs/connections.md>
-
-
 
 ### MSSQL
 
