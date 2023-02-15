@@ -7,7 +7,7 @@
 Debian GNU/Linux 11 (bullseye)
 
 ```sh
-gcloud compute instances create data-validator --project=demos-vertex-ai --zone=us-central1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --metadata=enable-oslogin=true --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746038361521-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=data-validator,image=projects/debian-cloud/global/images/debian-11-bullseye-v20230206,mode=rw,size=10,type=projects/demos-vertex-ai/zones/us-central1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
+gcloud compute instances create data-validator --project=demos-vertex-ai --zone=us-central1-a --machine-type=e2-medium --network-interface=network-tier=PREMIUM,subnet=default --metadata=enable-oslogin=true --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=746038361521-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --tags=http-server,https-server --create-disk=auto-delete=yes,boot=yes,device-name=data-validator,image=projects/debian-cloud/global/images/debian-11-bullseye-v20230206,mode=rw,size=10,type=projects/demos-vertex-ai/zones/us-central1-a/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
 ```
 
 ## Add VM IP to Cloud SQL instance 
@@ -75,8 +75,6 @@ sudo apt-get install -y libgssapi-krb5-2
 pip install pyodbc
 ```
 
-
-
 ## create source and target connections 
 
 GCP doc: <https://cloud.google.com/sql/docs/sqlserver/connect-overview>
@@ -84,7 +82,7 @@ DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-vali
 
 ### MSSQL
 
-* create a connection to MS SQL Server Cloud SQL instance:
+#### create a connection to MS SQL Server Cloud SQL instance
 
 ```sh
 data-validation connections add \
@@ -96,7 +94,7 @@ data-validation connections add \
     --database demo
 ```
 
-* test connection by column validation (`COUNT(*)`)
+#### test connection by column validation (`COUNT(*)`)
 
 ```sh
 data-validation validate column \
@@ -105,12 +103,43 @@ data-validation validate column \
   -tbls demo.demo.loans
 ```
 
-
 ### bigquery
 
+Initialize gcloud 
+
+```sh
+gcloud config set project demos-vertex-ai
+```
 
 ```sh
 data-validation connections add \
     --connection-name MY_BQ_CONN BigQuery \
     --project-id demos-vertex-ai
+```
+
+#### test connection by column validation (`COUNT(*)`)
+
+```sh
+# source env/bin/activate
+data-validation validate column \
+  -sc MY_BQ_CONN -tc MY_BQ_CONN \
+  -tbls demos-vertex-ai.demo.loans201
+```
+
+## Run MSSQL Server vs BQ Validation 
+
+the following should succeed:
+
+```sh
+data-validation validate column \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    --tables-list demo.demo.loans=demos-vertex-ai.demo.loans201 
+```
+
+and the following should fail (since BQ table is 200k rows vs MSSQL server 201)
+
+```sh
+data-validation validate column \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    --tables-list demo.demo.loans=demos-vertex-ai.demo.loans 
 ```

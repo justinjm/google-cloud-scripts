@@ -246,6 +246,13 @@ CREATE OR REPLACE TABLE `demo.loans`
 AS (SELECT * EXCEPT(`default`) FROM `demos-vertex-ai.demo_dataset1.loans`)
 ```
 
+* create a second, smaller dataset in BQ for validation against MSSQL (no default column)
+
+```sql
+CREATE OR REPLACE TABLE `demo.loans201`
+AS (SELECT * EXCEPT(`default`) FROM `demos-vertex-ai.demo_dataset1.loans` LIMIT 201) 
+```
+
 #### DVT 
 
 * get info from SQL instance
@@ -269,7 +276,7 @@ DVT doc: <https://github.com/GoogleCloudPlatform/professional-services-data-vali
 
 ```
 data-validation validate column \
-  -sc MSSQL_CONN \
+  -sc MY_MSSQL_CONN \
   -tbls demo.demo.loans
 ```
 
@@ -277,10 +284,9 @@ data-validation validate column \
 * execute validation
 
 ```sh
-
 data-validation validate column \
-    --source-conn MY_BQ_CONN --target-conn MY_BQ_CONN \
-    --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    # --tables-list demos-vertex-ai.demo_dataset1.loans=demos-vertex-ai.demo_dataset2.loans \ #TODO - add MSSQL
     --count '*' \
     --bq-result-handler demos-vertex-ai.pso_data_validator.results
 ```
