@@ -96,6 +96,16 @@ data-validation connections add \
     --database demo
 ```
 
+* test connection by column validation (`COUNT(*)`)
+
+```sh
+data-validation validate column \
+  -sc MY_MSSQL_CONN \
+  -tc MY_MSSQL_CONN \
+  -tbls demo.demo.loans
+```
+
+
 ### bigquery
 
 
