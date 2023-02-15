@@ -2,7 +2,7 @@
 
 [Automate Validation using the Data Validation Tool (DVT) | Google Cloud Skills Boost](https://www.cloudskillsboost.google/focuses/45997?parent=catalog)
 
-## create VM 
+## create VM
 
 Debian GNU/Linux 11 (bullseye)
 
@@ -128,6 +128,8 @@ data-validation validate column \
 
 ## Run MSSQL Server vs BQ Validation 
 
+### show results in stdout / console output
+
 the following should succeed:
 
 ```sh
@@ -142,4 +144,35 @@ and the following should fail (since BQ table is 200k rows vs MSSQL server 201)
 data-validation validate column \
     --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
     --tables-list demo.demo.loans=demos-vertex-ai.demo.loans 
+```
+
+### Save results to BQ table
+
+First, we need to create a destination table for DVT
+
+```sh
+git clone https://github.com/GoogleCloudPlatform/professional-services-data-validator.git
+cd professional-services-data-validator
+```
+
+```sh
+bq mk demo_dvt
+```
+
+```sh
+bq mk --table \
+  --time_partitioning_field start_time \
+  --clustering_fields validation_name,run_id \
+  demo_dvt.results \
+  terraform/results_schema.json
+```
+
+Then, we run a DVT job, specifying the newly created BQ table as desitnation for results 
+
+```sh
+data-validation validate column \
+    --source-conn MY_MSSQL_CONN --target-conn MY_BQ_CONN \
+    --tables-list demo.demo.loans=demos-vertex-ai.demo.loans201 \
+    --count '*' \
+    --bq-result-handler demos-vertex-ai.demo_dvt.results
 ```
