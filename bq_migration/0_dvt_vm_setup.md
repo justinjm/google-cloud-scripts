@@ -64,7 +64,11 @@ sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
 ```sh
 pip install pyodbc
-sudo apt-get install unixodbc-dev
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+source ~/.bashrc
+sudo apt-get install -y unixodbc-dev
+sudo apt-get install -y libgssapi-krb5-2
 ```
 
 
