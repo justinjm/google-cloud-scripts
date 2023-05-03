@@ -3,12 +3,9 @@ from google.cloud import storage
 
 
 # set constants
-# bucket_name = 'your-bucket-name'
-# file_names = ['file_1.csv', 'file_2.csv']
-bucket_name = 'demos-vertex-ai-bq-staging'
-file_names = ['crm_account.csv', 'crm_user.csv']
+bucket_name = 'your-bucket-name'
+file_names = ['file_1.csv', 'file_2.csv']
 dataset_name = 'z_test'
-query = f'SELECT COUNT(*) AS count FROM `demos-vertex-ai.{dataset_name}.crm_account`'
 
 # define function
 def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
