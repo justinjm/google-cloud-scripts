@@ -1,7 +1,12 @@
 from google.cloud import bigquery
 from google.cloud import storage
 
+## set constants 
+bucket_name = 'demos-vertex-ai-bq-staging'
+file_names = ['crm_account.csv', 'crm_user.csv']
+dataset_name = 'zpygcstest'
 
+## define function
 def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
     """Load CSV files from Google Cloud Storage to their own BigQuery tables."""
     # Create a BigQuery client
@@ -49,8 +54,5 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         print(f'File {file_name} loaded to table {table_name}.')
 
 
-# Example usage
-bucket_name = 'demos-vertex-ai-bq-staging'
-file_names = ['crm_account.csv', 'crm_user.csv']
-dataset_name = 'zpygcstest'
+# run ingestion
 load_csv_to_bigquery(bucket_name, file_names, dataset_name)
