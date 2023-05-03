@@ -1,12 +1,16 @@
 from google.cloud import bigquery
 from google.cloud import storage
 
-## set constants 
+
+# set constants
+# bucket_name = 'your-bucket-name'
+# file_names = ['file_1.csv', 'file_2.csv']
 bucket_name = 'demos-vertex-ai-bq-staging'
 file_names = ['crm_account.csv', 'crm_user.csv']
 dataset_name = 'z_test'
+query = f'SELECT COUNT(*) AS count FROM `demos-vertex-ai.{dataset_name}.crm_account`'
 
-## define function
+# define function
 def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
     """Load CSV files from Google Cloud Storage to their own BigQuery tables."""
     # Create a BigQuery client
@@ -31,7 +35,7 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         bucket = storage.Client().get_bucket(bucket_name)
         blob = bucket.blob(file_name)
         first_row = blob.download_as_string().split(b'\n')[0].decode('utf-8')
-        # ensure safe names - replace "." and " " with "_" 
+        # ensure safe names - replace "." and " " with "_"
         first_row = first_row.replace(".", "_").replace(" ", "_")
 
         schema = [bigquery.SchemaField(field_name, 'STRING')
@@ -60,5 +64,26 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         print(f'File {file_name} loaded to table {table_name}.')
 
 
+def bq_query(query, location='US'):
+    """Query BigQuery Table to check results"""
+    try:
+        client = bigquery.Client()
+
+        query_job = client.query(query, location=location)
+        
+        print("Querying a table to confirm data loaded...")
+        for row in query_job:
+            print("Results: row_count={}".format(row[0], row["count"]))
+                    
+        return query_job
+    except Exception as e:
+        print('[ ERROR] {}'.format(e))
+
+
 # run ingestion
 load_csv_to_bigquery(bucket_name, file_names, dataset_name)
+
+# run queries to check 
+bq_query(query)
+
+
