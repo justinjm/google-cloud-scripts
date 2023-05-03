@@ -32,7 +32,8 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         blob = bucket.blob(file_name)
         first_row = blob.download_as_string().split(b'\n')[0].decode('utf-8')
         # TODO - ensure safe names - replace "." with _ and trim trailing spaces
-        # first_row = first_row.replace(".", "_").strip()
+        first_row = first_row.replace(".", "_")
+        first_row = first_row.replace(" ", "_")
 
         schema = [bigquery.SchemaField(field_name, 'STRING')
                   for field_name in first_row.split(',')]
@@ -51,6 +52,7 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
             schema=schema,
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV
+            # ,write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
         )
         load_job = client.load_table_from_uri(
             uri, table_ref, job_config=job_config)
