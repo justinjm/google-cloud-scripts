@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 from google.cloud import storage
 
+
 def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
     """Load CSV files from Google Cloud Storage to their own BigQuery tables."""
     # Create a BigQuery client
@@ -23,7 +24,8 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         bucket = storage.Client().get_bucket(bucket_name)
         blob = bucket.blob(file_name)
         first_row = blob.download_as_string().split(b'\n')[0].decode('utf-8')
-        schema = [bigquery.SchemaField(field_name, 'STRING') for field_name in first_row.split(',')]
+        schema = [bigquery.SchemaField(field_name, 'STRING')
+                  for field_name in first_row.split(',')]
 
         # Create the table if it doesn't exist
         table_ref = dataset_ref.table(table_name)
@@ -40,7 +42,8 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV
         )
-        load_job = client.load_table_from_uri(uri, table_ref, job_config=job_config)
+        load_job = client.load_table_from_uri(
+            uri, table_ref, job_config=job_config)
         load_job.result()
 
         print(f'File {file_name} loaded to table {table_name}.')
