@@ -50,8 +50,8 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
         job_config = bigquery.LoadJobConfig(
             schema=schema,
             skip_leading_rows=1,
-            source_format=bigquery.SourceFormat.CSV
-            # ,write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+            source_format=bigquery.SourceFormat.CSV,
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
         )
         load_job = client.load_table_from_uri(
             uri, table_ref, job_config=job_config)
