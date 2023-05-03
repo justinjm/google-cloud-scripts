@@ -4,7 +4,7 @@ from google.cloud import storage
 ## set constants 
 bucket_name = 'demos-vertex-ai-bq-staging'
 file_names = ['crm_account.csv', 'crm_user.csv']
-dataset_name = 'zpygcstest'
+dataset_name = 'zgcstobqmultitest'
 
 ## define function
 def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
@@ -24,11 +24,16 @@ def load_csv_to_bigquery(bucket_name, file_names, dataset_name):
     for file_name in file_names:
         # Create the table name from the file name
         table_name = file_name.split('.')[0]
+        # ensure safe names - replace "." with _ and trim trailing spaces 
+        table_name = table_name.replace(".", "_").strip()
 
         # Create the table schema from the first row of the CSV file
         bucket = storage.Client().get_bucket(bucket_name)
         blob = bucket.blob(file_name)
         first_row = blob.download_as_string().split(b'\n')[0].decode('utf-8')
+        # TODO - ensure safe names - replace "." with _ and trim trailing spaces
+        # first_row = first_row.replace(".", "_").strip()
+
         schema = [bigquery.SchemaField(field_name, 'STRING')
                   for field_name in first_row.split(',')]
 
