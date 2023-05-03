@@ -1,8 +1,8 @@
 from google.cloud import bigquery
 
 # Replace with your project ID and the list of dataset IDs to delete
-project_id = 'demos-vertex-ai'
-dataset_ids_to_delete = ['bqmlga4_demo', 'demo']
+project_id = 'your-project-id'
+dataset_ids_to_delete = ['dataset2', 'dataset2']
 
 # Create a BigQuery client object
 client = bigquery.Client(project=project_id)
