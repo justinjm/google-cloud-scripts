@@ -89,7 +89,7 @@ OPTIONS (
 ```sql
 SELECT
   table_name,
-  `z_test`.get_row_access_policies(table_name)
+  `z_test`.get_row_access_policies(table_name) as rowAccessPolicies
 FROM
   z_test.INFORMATION_SCHEMA.TABLES
 ```
