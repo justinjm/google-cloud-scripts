@@ -1,11 +1,14 @@
 import requests
 from google.auth import default
 from google.auth.transport.requests import Request
+import json
 
 projectId = "demos-vertex-ai"
+datasetId = "z_test"
+tableId = "crm_account_rsl"
 
 # Set the URL for the BigQuery API endpoint
-url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{projectId}/queries"
+url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{projectId}/datasets/{datasetId}/tables/{tableId}/rowAccessPolicies"
 
 # Use the default credentials to obtain an access token
 creds, _ = default(scopes=["https://www.googleapis.com/auth/bigquery"])
@@ -17,15 +20,12 @@ headers = {
     "Content-Type": "application/json"
 }
 
-# Set the query
-query = """
-#standardSQL
-SELECT * FROM `bigquery-public-data.samples.natality`
-LIMIT 100
-"""
-
 # Send the query using the requests module
-response = requests.post(url, headers=headers, json={"query": query})
+response = requests.get(url, headers=headers)
 
 # Print the response
-print(response.json())
+print(json.dumps(response.json(), indent=4))
+
+# https://cloud.google.com/bigquery/docs/managing-row-level-security#create_or_update_a_row-level_access_policy
+# https://cloud.google.com/bigquery/docs/reference/rest/v2/rowAccessPolicies/list
+# https://towardsdatascience.com/remote-functions-in-bigquery-af9921498438
