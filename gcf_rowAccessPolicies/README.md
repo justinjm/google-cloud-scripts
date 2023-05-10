@@ -27,6 +27,27 @@ Show connection info and copy service account, you will need this in a later ste
 bq show --location=US --connection gcf-conn
 ```
 
+## Setup Data 
+
+Create 2 tables in a single dataset 
+
+1. crm_account_rsl
+
+```sql
+CREATE ROW ACCESS POLICY crm_account_filter
+ON `demos-vertex-ai.z_test.crm_account_rsl`
+GRANT TO('user:bruce@justinjm.altostrat.com')
+FILTER USING(State_Code='CA')
+```
+
+2. crm_user_rsl
+
+```sql
+CREATE ROW ACCESS POLICY crm_user_filter
+ON `demos-vertex-ai.z_test.crm_user_rsl`
+GRANT TO('user:bruce@justinjm.altostrat.com')
+FILTER USING(Country_Code = 'US')
+```
 
 ## Setup Google Cloud Function 
 
@@ -65,7 +86,7 @@ after deployment, test with sample values:
 ```txt
 {
   "calls": [
-      ["crm_account_rsl"]
+      ["demos-vertex-ai", "z_test", "crm_account_rsl"]
   ]
 }
 
@@ -90,13 +111,37 @@ WITH CONNECTION `demos-vertex-ai.us.gcf-conn` OPTIONS (
 
 ```sql
 SELECT
+  table_catalog,
+  table_schema,
   table_name,
-  `z_test`.get_row_access_policies(table_name) as rowAccessPolicies
+  `z_test`.get_row_access_policies(table_catalog, table_schema, table_name) as rowAccessPolicies
 FROM
   z_test.INFORMATION_SCHEMA.TABLES
 ```
 
 <https://cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json>
+
+
+```sql
+WITH data AS (
+  SELECT
+  table_catalog,
+  table_schema,
+  table_name,
+  `z_test`.get_row_access_policies(table_catalog, table_schema, table_name) as reply
+FROM
+  z_test.INFORMATION_SCHEMA.TABLES
+) 
+SELECT
+  * EXCEPT(reply),
+  REPLACE(JSON_QUERY(reply, '$.rowAccessPolicies[0].rowAccessPolicyReference.policyId'), '"', '') AS policyId,
+  REPLACE(JSON_QUERY(reply, '$.rowAccessPolicies[0].filterPredicate'), '"', '') AS filterPredicate,
+  REPLACE(JSON_QUERY(reply, '$.rowAccessPolicies[0].creationTime'), '"', '') AS creationTime,
+  REPLACE(JSON_QUERY(reply, '$.rowAccessPolicies[0].lastModifiedTime'), '"', '') AS lastModifiedTime
+
+FROM data
+```
+
 
 ## Resources
 

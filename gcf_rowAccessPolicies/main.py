@@ -14,7 +14,6 @@ def get_row_access_polices(request):
         datasetId = call[1]
         tableId = call[2]
 
-        # get rowAccessPolicies
         # Set the URL for the BigQuery API endpoint
         url = f"https://bigquery.googleapis.com/bigquery/v2/projects/{projectId}/datasets/{datasetId}/tables/{tableId}/rowAccessPolicies"
 
