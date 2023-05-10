@@ -74,12 +74,15 @@ after deployment, test with sample values:
 ## Create BigQuery UDF
 
 ```sql
-CREATE OR REPLACE FUNCTION z_test.get_row_access_policies(table_catalog STRING, table_schema STRING, table_name STRING) RETURNS STRING
-REMOTE WITH CONNECTION `demos-vertex-ai.us.gcf-conn` -- change this to reflect your PROJECT ID
-OPTIONS (
+CREATE OR REPLACE FUNCTION
+  z_test.get_row_access_policies(table_catalog STRING,
+    table_schema STRING,
+    table_name STRING)
+  RETURNS STRING REMOTE
+  -- change this to reflect your PROJECT ID
+WITH CONNECTION `demos-vertex-ai.us.gcf-conn` OPTIONS (
     -- change this to reflect the Trigger URL of your cloud function (look for the TRIGGER tab)
-    endpoint = 'https://us-central1-demos-vertex-ai.cloudfunctions.net/bq-table-row-access-policies'
-)
+    endpoint = 'https://us-central1-demos-vertex-ai.cloudfunctions.net/bq-table-row-access-policies' )
 ```
 
 ## Invoke remote function from BigQuery
@@ -95,12 +98,19 @@ FROM
 
 <https://cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json>
 
-
 ## Resources
+
+BigQuery Row Level Security
+
+* [Use row-level security  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/managing-row-level-security#bq)
+* [Method: rowAccessPolicies.list  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/reference/rest/v2/rowAccessPolicies/list#RowAccessPolicy)
+* [HTTP Tutorial  |  Cloud Functions Documentation  |  Google Cloud](https://cloud.google.com/functions/docs/tutorials/http-1st-gen)
+
+BigQuery Remote Functions
 
 * [Working with Remote Functions  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/reference/standard-sql/remote-functions#sample_code)
 * [Remote Functions in BigQuery. How it works, and what you can do with… | by Lak Lakshmanan | Towards Data Science](https://towardsdatascience.com/remote-functions-in-bigquery-af9921498438) - good tutorial by former Googler
 
+BigQuery Information Schema
 
-
-[Use row-level security  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/managing-row-level-security#bq)
+* [TABLES view  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/information-schema-tables)
