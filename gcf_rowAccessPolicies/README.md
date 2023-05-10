@@ -60,6 +60,30 @@ after deployment, test with sample values:
 
 ```
 
+## Create BigQuery UDF
+
+```sql
+CREATE OR REPLACE FUNCTION z_test.get_row_access_policies(table_name STRING) RETURNS STRING
+REMOTE WITH CONNECTION `demos-vertex-ai.us.gcf-conn` -- change this to reflect your PROJECT ID
+OPTIONS (
+    -- change this to reflect the Trigger URL of your cloud function (look for the TRIGGER tab)
+    endpoint = 'https://us-central1-demos-vertex-ai.cloudfunctions.net/bq-table-row-access-policies'
+)
+```
+
+
+## Invoke remote function from BigQuery
+
+
+```sql
+SELECT
+  table_name,
+  `z_test`.get_row_access_policies(table_name)
+FROM
+  z_test.INFORMATION_SCHEMA.TABLES
+```
+
+## Resources
 
 ```sh
 gcloud projects add-iam-policy-binding demos-vertex-ai \
