@@ -74,14 +74,13 @@ after deployment, test with sample values:
 ## Create BigQuery UDF
 
 ```sql
-CREATE OR REPLACE FUNCTION z_test.get_row_access_policies(table_name STRING) RETURNS STRING
+CREATE OR REPLACE FUNCTION z_test.get_row_access_policies(table_catalog STRING, table_schema STRING, table_name STRING) RETURNS STRING
 REMOTE WITH CONNECTION `demos-vertex-ai.us.gcf-conn` -- change this to reflect your PROJECT ID
 OPTIONS (
     -- change this to reflect the Trigger URL of your cloud function (look for the TRIGGER tab)
     endpoint = 'https://us-central1-demos-vertex-ai.cloudfunctions.net/bq-table-row-access-policies'
 )
 ```
-
 
 ## Invoke remote function from BigQuery
 
@@ -94,9 +93,14 @@ FROM
   z_test.INFORMATION_SCHEMA.TABLES
 ```
 
+<https://cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#string_for_json>
+
+
 ## Resources
 
 * [Working with Remote Functions  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/reference/standard-sql/remote-functions#sample_code)
 * [Remote Functions in BigQuery. How it works, and what you can do with… | by Lak Lakshmanan | Towards Data Science](https://towardsdatascience.com/remote-functions-in-bigquery-af9921498438) - good tutorial by former Googler
+
+
 
 [Use row-level security  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/managing-row-level-security#bq)
