@@ -39,12 +39,23 @@ bq show --location=US --connection gcf-conn
 
 ### Grant service accounts acccess 
 
-While GCF is deploying, grant the app engine default service account BigQuery permissions (you can remove/adjust this later)
+While GCF is deploying, grant account access in 2 places 
+
+
+1. the app engine default service account BigQuery permissions (you can remove/adjust this later) so that the cloud 
 
 ```sh
 gcloud projects add-iam-policy-binding demos-vertex-ai \
     --member=serviceAccount:demos-vertex-ai@appspot.gserviceaccount.com \
     --role=roles/bigquery.admin
+```
+
+2. Grant 
+
+```sh
+gcloud functions add-iam-policy-binding bq-table-row-access-policies \
+    --member=serviceAccount:bqcx-746038361521-agnk@gcp-sa-bigquery-condel.iam.gserviceaccount.com \
+    --role=roles/cloudfunctions.invoker
 ```
 
 ## make test call 
@@ -85,8 +96,7 @@ FROM
 
 ## Resources
 
-```sh
-gcloud projects add-iam-policy-binding demos-vertex-ai \
-    --member=serviceAccount:bqcx-746038361521-agnk@gcp-sa-bigquery-condel.iam.gserviceaccount.com \
-    --role=roles/bigquery.admin
-```
+* [Working with Remote Functions  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/reference/standard-sql/remote-functions#sample_code)
+* [Remote Functions in BigQuery. How it works, and what you can do with… | by Lak Lakshmanan | Towards Data Science](https://towardsdatascience.com/remote-functions-in-bigquery-af9921498438) - good tutorial by former Googler
+
+[Use row-level security  |  BigQuery  |  Google Cloud](https://cloud.google.com/bigquery/docs/managing-row-level-security#bq)
