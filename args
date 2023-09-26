@@ -2,16 +2,17 @@ PROJECT_ID=$(gcloud config get-value project)
 PROJECT_NUMBER=$(gcloud projects describe $(gcloud config get-value project) --format='value(projectNumber)')
 REGION="us-central1"
 DEFAULT_SVC_ACCOUNT_EMAIL="$PROJECT_NUMBER-compute@developer.gserviceaccount.com"
-SVC_ACCOUNT_NAME="google-cloud-scripts-demo"
-SVC_ACCOUNT_EMAIL="$SVC_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
-DOCKER_REPO="google-cloud-scripts-demo"
-IMAGE_NAME="google-cloud-scripts-demo"
+APP_NAME="google-cloud-scripts-demo"
+SVC_ACCOUNT_NAME=$APP_NAME
+SVC_ACCOUNT_EMAIL="$APP_NAME@$PROJECT_ID.iam.gserviceaccount.com"
+DOCKER_REPO="$APP_NAME-repo"
+IMAGE_NAME="$APP_NAME-image"
 IMAGE_TAG="latest"
 IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$DOCKER_REPO/$IMAGE_NAME:$IMAGE_TAG"
-CLOUD_RUN_SERVICE_NAME="google-cloud-scripts-demo"
-SECRET_NAME="google-cloud-scripts-demo-secrets"
-SOURCE_REPO_NAME="google-cloud-scripts-demo-demo"
-BUILD_TRIGGER_NAME=$CLOUD_RUN_SERVICE_NAME
+CLOUD_RUN_SERVICE_NAME="$APP_NAME"
+SECRET_NAME="$APP_NAME-secrets"
+SOURCE_REPO_NAME="$APP_NAME"
+BUILD_TRIGGER_NAME="$CLOUD_RUN_SERVICE_NAME-trigger"
 
 echo "==================== args ====================================================================="
 echo "PROJECT_ID:                " $PROJECT_ID
